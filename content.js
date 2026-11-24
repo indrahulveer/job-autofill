@@ -5,7 +5,7 @@
   const SKIP_TYPES = new Set(['hidden', 'submit', 'button', 'reset', 'file', 'password', 'checkbox', 'radio', 'image', 'color', 'range', 'date']);
 
   const norm = (s) =>
-    (s || '').toLowerCase().replace(/[_\-*:()\[\]\/.,]/g, ' ').replace(/\s+/g, ' ').trim();
+    (s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   function collect(root, out) {
