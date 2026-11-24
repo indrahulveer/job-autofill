@@ -156,6 +156,8 @@
         if (f && profile[f.key]) {
           // a textarea is only for free-text fields, to avoid dumping a summary into e.g. a "location" box
           if (el.tagName === 'TEXTAREA' && !f.multiline && f.key !== 'skills') return;
+          // choice questions are only answered by dropdowns / radios / buttons, never typed into a text box
+          if (f.options && el.tagName !== 'SELECT') return;
           value = profile[f.key];
         }
       }
@@ -164,7 +166,126 @@
         flash(el);
       }
     });
+    count += fillChoices(profile, overwrite);
     return count;
+  }
+
+  // ---------- radio buttons, role=radio and Yes/No / Male/Female button pairs ----------
+  const txt = (e) => (e.innerText || e.textContent || '');
+
+  function optionLabel(el) {
+    if (el.tagName === 'INPUT') {
+      const parts = [];
+      if (el.labels) el.labels.forEach((l) => parts.push(txt(l)));
+      if (!parts.join('').trim()) parts.push(el.getAttribute('aria-label') || '');
+      if (!parts.join('').trim() && el.closest('label')) parts.push(txt(el.closest('label')));
+      if (!parts.join('').trim() && el.nextSibling) parts.push(el.nextSibling.textContent || '');
+      if (!parts.join('').trim() && el.nextElementSibling) parts.push(txt(el.nextElementSibling));
+      if (!parts.join('').trim()) parts.push(el.value || '');
+      return norm(parts.join(' '));
+    }
+    return norm(el.getAttribute('aria-label') || txt(el));
+  }
+
+  function isChosen(el) {
+    return el.checked === true || el.getAttribute('aria-checked') === 'true' || el.getAttribute('aria-pressed') === 'true';
+  }
+
+  // Finds the question text for a group of options: legend / aria label, else the nearest ancestor
+  // that carries extra text but does not contain any other group's options.
+  function questionFor(opts, allOpts) {
+    const first = opts[0];
+    const fs = first.closest('fieldset');
+    if (fs && fs.querySelector('legend')) return norm(txt(fs.querySelector('legend')));
+    const rg = first.closest('[role="radiogroup"], [role="group"]');
+    if (rg) {
+      const own = rg.getAttribute('aria-label');
+      const lb = rg.getAttribute('aria-labelledby');
+      const byId = lb ? lb.split(/\s+/).map((id) => { const n = document.getElementById(id); return n ? txt(n) : ''; }).join(' ') : '';
+      if ((own || byId).trim()) return norm((own || '') + ' ' + byId);
+    }
+    const mine = new Set(opts);
+    let p = first.parentElement, best = '';
+    for (let i = 0; i < 7 && p; i++, p = p.parentElement) {
+      if (allOpts.some((o) => !mine.has(o) && p.contains(o))) break;       // reached a neighbouring question
+      let t = txt(p);
+      opts.forEach((o) => { t = t.replace(txt(o), ' '); });
+      t = norm(t);
+      if (t.length >= 8) { best = t; break; }
+    }
+    return best.slice(0, 1500);
+  }
+
+  function pickOption(opts, value) {
+    const v = norm(value);
+    if (!v) return null;
+    const labels = opts.map(optionLabel);
+    let i = labels.findIndex((l) => l === v);
+    if (i < 0) i = labels.findIndex((l) => l.startsWith(v + ' '));
+    if (i < 0) i = labels.findIndex((l) => l.length <= 40 && new RegExp('(^|\\s)' + esc(v) + '(\\s|$)').test(l));
+    return i < 0 ? null : opts[i];
+  }
+
+  function matchChoice(question) {
+    for (const f of JAF_FIELDS) {
+      if (!f.options) continue;
+      if (f.aliases.some((a) => phraseHit(question, a))) return f;
+    }
+    return null;
+  }
+
+  function fillChoices(profile, overwrite) {
+    const groups = [];
+    const used = new Set();
+
+    // 1) native radio buttons, grouped by name + form
+    const radios = new Map();
+    collect(document, []).forEach((el) => {
+      if (el.tagName !== 'INPUT' || (el.type || '').toLowerCase() !== 'radio' || el.disabled) return;
+      const k = (el.name || 'noname-' + groups.length) + '|' + (el.form ? Array.prototype.indexOf.call(document.forms, el.form) : -1);
+      if (!radios.has(k)) radios.set(k, []);
+      radios.get(k).push(el);
+    });
+    radios.forEach((g) => groups.push(g));
+
+    // 2) ARIA radios (custom components)
+    const aria = new Map();
+    document.querySelectorAll('[role="radio"]').forEach((el) => {
+      if (el.getAttribute('aria-disabled') === 'true') return;
+      const host = el.closest('[role="radiogroup"]') || el.parentElement;
+      if (!aria.has(host)) aria.set(host, []);
+      aria.get(host).push(el);
+    });
+    aria.forEach((g) => groups.push(g));
+
+    // 3) plain buttons used as a pair/short list of answers: group siblings with short text
+    const btns = new Map();
+    document.querySelectorAll('button, [role="button"]').forEach((el) => {
+      if (el.disabled || el.getAttribute('role') === 'radio' || (el.type || '') === 'submit') return;
+      const t = optionLabel(el);
+      if (!t || t.length > 25 || el.getClientRects().length === 0) return;
+      const host = el.parentElement;
+      if (!host) return;
+      if (!btns.has(host)) btns.set(host, []);
+      btns.get(host).push(el);
+    });
+    btns.forEach((g) => { if (g.length >= 2 && g.length <= 6) groups.push(g); });
+
+    const allOpts = groups.flat();
+    let n = 0;
+    groups.forEach((opts) => {
+      if (opts.some((o) => used.has(o))) return;
+      const f = matchChoice(questionFor(opts, allOpts));
+      if (!f || !profile[f.key]) return;
+      if (!overwrite && opts.some(isChosen)) return;
+      const target = pickOption(opts, profile[f.key]);
+      if (!target) return;
+      opts.forEach((o) => used.add(o));
+      target.click();
+      flash(target.tagName === 'INPUT' && target.labels && target.labels[0] ? target.labels[0] : target);
+      n++;
+    });
+    return n;
   }
 
   function insertActive(value) {

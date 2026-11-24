@@ -99,6 +99,12 @@ kbd {
   flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text);
   font: inherit; text-align: right; padding: 12px 0;
 }
+.row select {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--blue); font: inherit;
+  text-align: right; text-align-last: right; padding: 12px 0; cursor: pointer; appearance: none; -webkit-appearance: none;
+}
+.row select:has(option[value=""]:checked) { color: var(--text-2); opacity: .7; }
+.row select option { color: var(--text); background: var(--card); }
 .row textarea { text-align: left; resize: none; min-height: 72px; padding: 11px 0; line-height: 1.4; }
 .row.tall { align-items: flex-start; }
 .row.tall > label { padding-top: 12px; }

@@ -2,7 +2,24 @@
 // aliases: phrases matched inside a form label / placeholder / aria-label (word-boundary match).
 // exact:   phrases that must equal the whole label (for generic words like "name").
 // Order matters: the first matching field wins, so specific fields come first.
+// options: the field is a CHOICE question (radio buttons, Yes/No buttons, dropdown). The popup shows a
+//          picker and the page filler only clicks the option whose label equals your saved choice.
 var JAF_FIELDS = [
+  // --- choice questions: order matters (the "extended relative" question also mentions "close relative") ---
+  { key: 'extendedRelative', label: 'Extended relative at company?', group: 'Choice questions', options: ['Yes', 'No'],
+    aliases: ['extended relative', 'extended relatives'] },
+  { key: 'closeRelative', label: 'Close relative at company?', group: 'Choice questions', options: ['Yes', 'No'],
+    aliases: ['close relative', 'close relatives', 'relative employed', 'relatives employed', 'related to anyone', 'family member employed', 'family members employed'] },
+  { key: 'sponsorship', label: 'Need visa sponsorship?', group: 'Choice questions', options: ['Yes', 'No'],
+    aliases: ['require sponsorship', 'requires sponsorship', 'need sponsorship', 'visa sponsorship', 'sponsorship', 'require a visa', 'work visa'] },
+  { key: 'legalRight', label: 'Legal right to work?', group: 'Choice questions', options: ['Yes', 'No'],
+    aliases: ['legal right to work', 'right to work', 'authorized to work', 'authorised to work', 'legally authorized', 'legally authorised', 'work authorization', 'work authorisation',
+      'eligible to work', 'eligibility to work', 'verification of your legal right', 'proof of eligibility'] },
+  { key: 'relocate', label: 'Willing to relocate?', group: 'Choice questions', options: ['Yes', 'No'],
+    aliases: ['willing to relocate', 'open to relocation', 'open to relocate', 'relocate', 'relocation'] },
+  { key: 'gender', label: 'Gender', group: 'Choice questions', options: ['Male', 'Female', 'Other', 'Prefer not to say'],
+    aliases: ['gender', 'sex'] },
+
   { key: 'currentCTC', label: 'Current CTC', group: 'Compensation',
     aliases: ['current ctc', 'current salary', 'current compensation', 'current annual', 'present ctc', 'current fixed', 'current package', 'ctc current'] },
   { key: 'expectedCTC', label: 'Expected CTC', group: 'Compensation',

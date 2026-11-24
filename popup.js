@@ -37,10 +37,22 @@ function renderFields() {
   const root = $('fields');
   root.replaceChildren();
   const groups = [...new Set(JAF_FIELDS.map((f) => f.group))];
+  groups.sort((a, b) => (a === 'Choice questions') - (b === 'Choice questions')); // yes/no questions go last
   groups.forEach((g) => {
     root.append(el('h2', { className: 'group-title', textContent: g }));
     const list = el('div', { className: 'group' });
     JAF_FIELDS.filter((f) => f.group === g).forEach((f) => {
+      if (f.options) {
+        const sel = el('select', {}, [el('option', { value: '', textContent: 'Not set' })]);
+        f.options.forEach((o) => sel.append(el('option', { value: o, textContent: o })));
+        sel.value = data.profile[f.key] || '';
+        sel.addEventListener('change', () => {
+          data.profile[f.key] = sel.value;
+          save();
+        });
+        list.append(el('div', { className: 'row' }, [el('label', { textContent: f.label }), sel]));
+        return;
+      }
       const input = el(f.multiline ? 'textarea' : 'input', { value: data.profile[f.key] || '', placeholder: f.multiline ? 'Write a short intro…' : 'Not set' });
       if (!f.multiline) input.type = 'text';
       input.addEventListener('input', () => {

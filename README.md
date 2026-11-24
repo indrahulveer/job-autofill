@@ -15,6 +15,6 @@
 
 ## Limits
 - Resume/file uploads can't be automated by extensions; attach manually.
-- Radio buttons and checkboxes (e.g. "Willing to relocate?") are not filled yet.
+- Yes/No, Male/Female and similar radio or button questions are answered from the "Choice questions" section of the Profile tab. Checkboxes (e.g. "I agree") are never ticked.
 - Data is stored unencrypted in this browser only. Don't save passwords or ID/bank numbers.
 - Always review the form before submitting.
