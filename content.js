@@ -61,13 +61,22 @@
     return new RegExp('(^|\\s)' + esc(norm(phrase)) + '(\\s|$)').test(text);
   }
 
+  function excluded(f, desc) {
+    if (f.notAc && f.notAc.some((a) => desc.ac.includes(a))) return true;
+    if (!f.not) return false;
+    const all = desc.primary.concat(desc.secondary);
+    return f.not.some((p) => { const re = new RegExp(p, 'i'); return all.some((t) => re.test(t)); });
+  }
+
   function matchBuiltin(desc) {
     for (const f of JAF_FIELDS) {
+      if (excluded(f, desc)) continue;
       if (f.ac && f.ac.some((a) => desc.ac.includes(a))) return f;
       if (f.exact && desc.primary.some((t) => f.exact.some((e) => t === norm(e)))) return f;
       if (f.aliases.some((a) => desc.primary.some((t) => phraseHit(t, a)))) return f;
     }
     for (const f of JAF_FIELDS) {
+      if (excluded(f, desc)) continue;
       // machine names are noisy, so require a stricter match (alias without spaces too)
       if (f.aliases.some((a) => desc.secondary.some((t) => phraseHit(t, a) || t.replace(/\s/g, '') === norm(a).replace(/\s/g, '')))) return f;
     }

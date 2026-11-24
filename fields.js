@@ -6,7 +6,8 @@ var JAF_FIELDS = [
   { key: 'currentCTC', label: 'Current CTC', group: 'Compensation',
     aliases: ['current ctc', 'current salary', 'current compensation', 'current annual', 'present ctc', 'current fixed', 'current package', 'ctc current'] },
   { key: 'expectedCTC', label: 'Expected CTC', group: 'Compensation',
-    aliases: ['expected ctc', 'expected salary', 'expected compensation', 'desired salary', 'salary expectation', 'expected annual', 'expected package', 'ctc expected'] },
+    aliases: ['expected ctc', 'expected salary', 'expected compensation', 'desired salary', 'salary expectation', 'expected annual', 'expected package', 'ctc expected',
+      'compensation expectations', 'compensation expectation', 'salary expectations', 'pay expectations', 'expected pay', 'expected remuneration'] },
   { key: 'noticePeriod', label: 'Notice period', group: 'Compensation',
     aliases: ['notice period', 'notice', 'how soon can you join', 'joining time', 'available to join', 'earliest start'] },
 
@@ -24,7 +25,10 @@ var JAF_FIELDS = [
     aliases: ['current location', 'current city', 'location', 'where are you based', 'residing'] },
   { key: 'addressLine1', label: 'Address line 1', group: 'Basics',
     aliases: ['address line 1', 'address line1', 'address 1', 'street address', 'address line', 'residential address', 'current address'],
-    exact: ['address'], ac: ['address-line1', 'street-address'] },
+    exact: ['address'], ac: ['address-line1', 'street-address'],
+    // never fill continuation lines: address line 2/3/4, address 2, street 2, line two, apt/suite/flat...
+    not: ['(address|addr|street|line)\\s*(line\\s*)?([2-9]|two|three|four|ii|iii|iv)\\b', 'second line|third line', '\\b(apartment|apt|suite|flat|landmark)\\b'],
+    notAc: ['address-line2', 'address-line3', 'address-line4'] },
   { key: 'city', label: 'City', group: 'Basics',
     aliases: ['city', 'town', 'city town'], ac: ['address-level2'] },
   { key: 'postalCode', label: 'Postal code / PIN code', group: 'Basics',
