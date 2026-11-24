@@ -1,0 +1,54 @@
+// Shared field definitions (loaded by popup, background and the page).
+// aliases: phrases matched inside a form label / placeholder / aria-label (word-boundary match).
+// exact:   phrases that must equal the whole label (for generic words like "name").
+// Order matters: the first matching field wins, so specific fields come first.
+var JAF_FIELDS = [
+  { key: 'currentCTC', label: 'Current CTC', group: 'Compensation',
+    aliases: ['current ctc', 'current salary', 'current compensation', 'current annual', 'present ctc', 'current fixed', 'current package', 'ctc current'] },
+  { key: 'expectedCTC', label: 'Expected CTC', group: 'Compensation',
+    aliases: ['expected ctc', 'expected salary', 'expected compensation', 'desired salary', 'salary expectation', 'expected annual', 'expected package', 'ctc expected'] },
+  { key: 'noticePeriod', label: 'Notice period', group: 'Compensation',
+    aliases: ['notice period', 'notice', 'how soon can you join', 'joining time', 'available to join', 'earliest start'] },
+
+  { key: 'firstName', label: 'First name', group: 'Basics',
+    aliases: ['first name', 'given name', 'firstname', 'fname', 'forename'], ac: ['given-name'] },
+  { key: 'lastName', label: 'Last name', group: 'Basics',
+    aliases: ['last name', 'surname', 'family name', 'lastname', 'lname'], ac: ['family-name'] },
+  { key: 'fullName', label: 'Full name', group: 'Basics',
+    aliases: ['full name', 'your name', 'candidate name', 'applicant name'], exact: ['name'], ac: ['name'] },
+  { key: 'email', label: 'Email', group: 'Basics',
+    aliases: ['email', 'e mail', 'email address'], ac: ['email'] },
+  { key: 'phone', label: 'Phone', group: 'Basics',
+    aliases: ['phone', 'mobile', 'contact number', 'contact no', 'telephone', 'whatsapp'], ac: ['tel', 'tel-national'] },
+  { key: 'location', label: 'Current location / city', group: 'Basics',
+    aliases: ['current location', 'current city', 'city', 'location', 'where are you based', 'residing'], ac: ['address-level2'] },
+  { key: 'preferredLocation', label: 'Preferred location', group: 'Basics',
+    aliases: ['preferred location', 'preferred city', 'preferred work location'] },
+
+  { key: 'linkedin', label: 'LinkedIn URL', group: 'Links',
+    aliases: ['linkedin'] },
+  { key: 'github', label: 'GitHub URL', group: 'Links',
+    aliases: ['github'] },
+  { key: 'portfolio', label: 'Portfolio / website', group: 'Links',
+    aliases: ['portfolio', 'personal website', 'website', 'personal site', 'blog'], ac: ['url'] },
+
+  { key: 'currentCompany', label: 'Current company', group: 'Experience',
+    aliases: ['current company', 'current employer', 'present company', 'present employer', 'current organization', 'current organisation'],
+    exact: ['company', 'employer', 'company name', 'organization', 'organisation'] },
+  { key: 'currentTitle', label: 'Current job title', group: 'Experience',
+    aliases: ['current title', 'current designation', 'job title', 'designation', 'current role', 'current position'], ac: ['organization-title'] },
+  { key: 'totalExperience', label: 'Total experience (years)', group: 'Experience',
+    aliases: ['total experience', 'years of experience', 'total years', 'experience in years', 'work experience', 'overall experience', 'relevant experience', 'experience'] },
+  { key: 'skills', label: 'Key skills', group: 'Experience',
+    aliases: ['key skills', 'technical skills', 'skills', 'tech stack'] },
+
+  { key: 'degree', label: 'Highest qualification', group: 'Education',
+    aliases: ['highest qualification', 'highest education', 'degree', 'qualification'] },
+  { key: 'college', label: 'College / university', group: 'Education',
+    aliases: ['college', 'university', 'institute', 'school'] },
+  { key: 'gradYear', label: 'Graduation year', group: 'Education',
+    aliases: ['graduation year', 'year of passing', 'passing year', 'year of graduation'] },
+
+  { key: 'summary', label: 'Short intro / cover note', group: 'Free text', multiline: true,
+    aliases: ['cover letter', 'tell us about yourself', 'about yourself', 'summary', 'introduce yourself', 'additional information', 'anything else'] }
+];

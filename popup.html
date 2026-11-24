@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="titlebar">
+      <h1>Autofill</h1>
+      <span id="status">Saved</span>
+    </div>
+    <nav class="segmented" role="tablist">
+      <button role="tab" class="seg active" data-tab="profile" aria-selected="true">Profile</button>
+      <button role="tab" class="seg" data-tab="answers" aria-selected="false">Answers</button>
+      <button role="tab" class="seg" data-tab="backup" aria-selected="false">Backup</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <button id="fill" class="fill-btn">
+        <span class="fill-icon">✦</span>
+        <span>Fill this page</span>
+      </button>
+      <p id="fillMsg" class="hint center">Press <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>F</kbd> on any form</p>
+    </section>
+
+    <section id="tab-profile" class="tab">
+      <div id="fields"></div>
+    </section>
+
+    <section id="tab-answers" class="tab" hidden>
+      <p class="footnote">Reusable answers like “Why this company?”. Any form label containing one of your keywords gets that answer.</p>
+      <div id="custom"></div>
+      <button id="addCustom" class="list-btn accent">＋ New answer</button>
+    </section>
+
+    <section id="tab-backup" class="tab" hidden>
+      <div class="group">
+        <label class="row switch-row">
+          <span class="row-title">Overwrite filled fields
+            <small>Replace text that is already in the form</small>
+          </span>
+          <input type="checkbox" id="overwrite" class="switch">
+        </label>
+      </div>
+      <div class="group">
+        <button id="export" class="list-btn">Export to JSON</button>
+        <button id="import" class="list-btn">Import from JSON</button>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+      <p class="footnote">Stored only in this browser, unencrypted. Don’t save passwords, PAN/Aadhaar or bank details. Always review the form before submitting.</p>
+    </section>
+  </main>
+
+  <script src="fields.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

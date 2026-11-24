@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Job Autofill Vault",
+  "version": "1.0.0",
+  "description": "Save your reusable job-application details once and autofill them on any careers page.",
+  "permissions": ["storage", "activeTab", "scripting", "contextMenus"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Job Autofill Vault"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "fill-page": {
+      "suggested_key": { "default": "Alt+Shift+F" },
+      "description": "Autofill this page"
+    }
+  }
+}
